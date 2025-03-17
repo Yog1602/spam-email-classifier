@@ -8,7 +8,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 
 # Load dataset
-df = pd.read_csv(r"C:\Users\Yog Dalal\Desktop\Email using logistic legression\mail_data.csv")
+try:
+    df = pd.read_csv("mail_data.csv")  # Ensure this file is in your GitHub repository
+except FileNotFoundError:
+    st.error("Error: 'mail_data.csv' not found! Please upload it to the same folder as this script.")
+    st.stop()
 
 # Rename columns if necessary
 df.rename(columns={'Category': 'label', 'Message': 'text'}, inplace=True)
@@ -34,7 +38,8 @@ df['text'] = df['text'].apply(preprocess_text)
 
 # Ensure dataset is not empty
 if df.empty:
-    raise ValueError("Dataset is empty after preprocessing.")
+    st.error("Dataset is empty after preprocessing. Please check your CSV file.")
+    st.stop()
 
 # Split dataset
 X_train, X_test, y_train, y_test = train_test_split(df['text'], df['label'], test_size=0.2, random_state=42)
@@ -84,3 +89,4 @@ if st.button("Classify"):
             st.error("This email is SPAM!")
         else:
             st.success("This email is Not Spam.")
+
